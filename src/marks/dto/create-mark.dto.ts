@@ -22,10 +22,4 @@ export class CreateMarkDto {
   @IsNotEmpty()
   @Min(1)
   max_score: number;
-
-  @IsString()
-  grade: string;
-
-  @IsString()
-  graded_at: string;
 }

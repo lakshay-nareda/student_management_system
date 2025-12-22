@@ -4,8 +4,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   JoinColumn,
+  AfterLoad,
 } from 'typeorm';
-import { Student } from 'src/student/entities/student.entity';
+import { Student } from '../../student/entities/student.entity';
 import { Course } from 'src/course/entities/course.entity';
 
 export enum ExamType {
@@ -39,6 +40,27 @@ export class Mark {
   @Column()
   max_score: number;
 
-  @Column()
-  graded_at: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  graded_at: Date;
+
+  grade: string;
+
+  @AfterLoad()
+  calculateGrade() {
+    const percentage = (this.score / this.max_score) * 100;
+    if (percentage >= 90) {
+      this.grade = 'A';
+    } else if (percentage >= 80) {
+      this.grade = 'B';
+    } else if (percentage >= 70) {
+      this.grade = 'C';
+    } else if (percentage >= 60) {
+      this.grade = 'D';
+    } else {
+      this.grade = 'F';
+    }
+  }
 }
