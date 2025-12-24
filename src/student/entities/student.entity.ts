@@ -21,41 +21,41 @@ export class Student {
   public readonly student_id: string;
 
   @Column({ length: 50 })
-  first_name: string;
+  public first_name: string;
 
   @Column({ length: 50 })
-  last_name: string;
+  public last_name: string;
 
   @Column({ unique: true })
-  email: string;
+  public email: string;
 
   @Column()
-  phone: string;
+  public phone: string;
 
   @Column({ type: 'date' })
-  dob: Date;
+  public dob: Date;
 
   @Column()
-  gender: string;
+  public gender: string;
 
   @Column()
-  address: string;
+  public address: string;
 
   @Column({ type: 'enum', enum: StudentStatus })
-  status: StudentStatus;
+  public status: StudentStatus;
 
   @OneToOne(() => Enrollment, (enrollment) => enrollment.student)
-  enrollment: Enrollment;
+  public enrollment: Enrollment;
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  public created_at: Date;
 
   @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  updated_at: Date;
+  public updated_at: Date;
 
   @OneToMany(() => Mark, (mark) => mark.student)
-  marks: Mark[];
+  public marks: Mark[];
 
   @OneToMany(() => Attendance, (attendance) => attendance.student)
-  attendances: Attendance[];
+  public attendances: Attendance[];
 }
