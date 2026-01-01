@@ -22,4 +22,8 @@ export class CreateEnrollmentDto {
   @IsOptional()
   @IsEnum(EnrollmentStatus)
   public status: EnrollmentStatus;
+
+  public constructor(values: CreateEnrollmentDto) {
+    Object.assign(this, values);
+  }
 }

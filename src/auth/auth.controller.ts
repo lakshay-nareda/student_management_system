@@ -4,7 +4,7 @@ import { SignInDto } from './dto/sign-in.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly _authService: AuthService) {}
+  public constructor(private readonly _authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')

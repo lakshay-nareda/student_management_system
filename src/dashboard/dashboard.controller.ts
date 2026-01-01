@@ -11,10 +11,10 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @UseGuards(AuthGuard)
 @Controller('dashboard')
 export class DashboardController {
-  constructor(private readonly dashboardService: DashboardService) {}
+  public constructor(private readonly dashboardService: DashboardService) {}
 
   @Get('admin')
-  getAdminDashboard(@Request() req: { user: { role: string } }) {
+  public getAdminDashboard(@Request() req: { user: { role: string } }) {
     if (req.user?.role !== 'admin') {
       throw new ForbiddenException(
         'Access denied: only admins can access this dashboard.',

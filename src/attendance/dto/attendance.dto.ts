@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { IsDateString, IsEnum, IsString, IsUUID } from 'class-validator';
-import { CourseDto } from 'src/course/dto/course.dto';
-import { StudentDto } from 'src/student/dto/student.dto';
+import { CourseDto } from '../../course/dto/course.dto';
+import { StudentDto } from '../../student/dto/student.dto';
 import { AttendanceStatus } from './create-attendance.dto';
 import { Attendance } from '../entities/attendance.entity';
 

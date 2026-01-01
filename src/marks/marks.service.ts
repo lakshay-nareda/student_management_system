@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Equal } from 'typeorm';
 import { Mark } from './entities/mark.entity';
 import { Student } from 'src/student/entities/student.entity';
 import { Course } from 'src/course/entities/course.entity';
@@ -9,52 +9,59 @@ import { MarkDto } from './dto/mark.dto';
 
 @Injectable()
 export class MarksService {
-  constructor(
+  public constructor(
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
   ) {}
 
   public async addMarks(createMarkDto: CreateMarkDto): Promise<MarkDto> {
-    const { student_id, course_id, exam_type, score, max_score, mark_id } =
-      createMarkDto;
+    return await this.entityManager.transaction(async (markAddManage) => {
+      const { student_id, course_id, exam_type, score, max_score, mark_id } =
+        createMarkDto;
 
-    const student = await this.entityManager.findOne(Student, {
-      where: { student_id: student_id },
-    });
-    if (!student) {
-      throw new NotFoundException('Student not found');
-    }
+      const student = await markAddManage.findOne(Student, {
+        where: { student_id: Equal(student_id) },
+      });
+      if (!student) {
+        throw new NotFoundException('Student not found');
+      }
 
-    const course = await this.entityManager.findOne(Course, {
-      where: { course_id: course_id },
-    });
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
+      const course = await markAddManage.findOne(Course, {
+        where: { course_id: Equal(course_id) },
+      });
+      if (!course) {
+        throw new NotFoundException('Course not found');
+      }
 
-    const mark = this.entityManager.create(Mark, {
-      student,
-      course,
-      exam_type,
-      score,
-      max_score,
-      mark_id,
-    });
+      const mark = markAddManage.create(Mark, {
+        student,
+        course,
+        exam_type,
+        score,
+        max_score,
+        mark_id,
+      });
 
-    return await this.entityManager.save(mark);
-  }
+      const saveMarks = await this.entityManager.save(mark);
 
-  public async findByStudent(student_id: string): Promise<MarkDto[]> {
-    return await this.entityManager.find(Mark, {
-      where: { student: { student_id: student_id } },
-      relations: ['course'],
+      return MarkDto.createFromEntity(saveMarks);
     });
   }
 
-  public async findByCourse(course_id: string): Promise<MarkDto[]> {
-    return await this.entityManager.find(Mark, {
+  public async findMarksByStudent(student_id: string): Promise<MarkDto[]> {
+    const markList = await this.entityManager.find(Mark, {
+      where: { student: { student_id: Equal(student_id) } },
+      relations: ['course', 'student'],
+    });
+    return markList.map((e) => MarkDto.createFromEntity(e));
+  }
+
+  public async findMarksByCourse(course_id: string): Promise<MarkDto[]> {
+    const markList = await this.entityManager.find(Mark, {
       where: { course: { course_id: course_id } },
-      relations: ['student'],
+      relations: ['student', 'course'],
     });
+
+    return markList.map((e) => MarkDto.createFromEntity(e));
   }
 }

@@ -10,12 +10,12 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(
+  public constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
     if (!token) {

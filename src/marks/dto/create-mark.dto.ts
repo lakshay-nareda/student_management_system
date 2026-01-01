@@ -25,4 +25,8 @@ export class CreateMarkDto {
   @IsNotEmpty()
   @Min(1)
   public max_score: number;
+
+  public constructor(values: CreateMarkDto) {
+    Object.assign(this, values);
+  }
 }

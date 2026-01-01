@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Attendance } from './entities/attendance.entity';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { Between, EntityManager, FindOptionsWhere } from 'typeorm';
+import { Between, EntityManager, Equal, FindOptionsWhere } from 'typeorm';
 import { Student } from '../student/entities/student.entity';
 import { Course } from '../course/entities/course.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
@@ -21,32 +21,41 @@ export class AttendanceService {
   public async addAttendance(
     createAttendanceDto: CreateAttendanceDto,
   ): Promise<AttendanceDto> {
-    const { student_id, course_id, date, status, remarks } =
-      createAttendanceDto;
+    return await this.entityManager.transaction(async (attendanceAddMange) => {
+      const { student_id, course_id, date, status, remarks } =
+        createAttendanceDto;
 
-    const student = await this.entityManager.findOne(Student, {
-      where: { student_id: student_id },
+      const student = await attendanceAddMange.findOne(Student, {
+        where: { student_id: Equal(student_id) },
+      });
+
+      if (!student) {
+        throw new NotFoundException(`Student Id ${student_id} is not found`);
+      }
+
+      const course = await attendanceAddMange.findOne(Course, {
+        where: { course_id: Equal(course_id) },
+      });
+
+      if (!course) {
+        throw new NotFoundException(`Course ID ${course_id} is not found`);
+      }
+
+      const attendance = attendanceAddMange.create(Attendance, {
+        student,
+        course,
+        date,
+        status,
+        remarks,
+      });
+
+      const saveAttendance = await this.entityManager.save(attendance);
+
+      return AttendanceDto.createFromEntity(saveAttendance);
     });
-    if (!student) {
-      throw new NotFoundException(`Student with ID ${student_id} not found`);
-    }
-    const course = await this.entityManager.findOne(Course, {
-      where: { course_id: course_id },
-    });
-    if (!course) {
-      throw new NotFoundException(`Course with ID ${course_id} not found`);
-    }
-    const attendance = this.entityManager.create(Attendance, {
-      student,
-      course,
-      date,
-      status,
-      remarks,
-    });
-    return await this.entityManager.save(attendance);
   }
 
-  async findByStudent(
+  public async findAttendanceByStudent(
     student_Id: string,
     form?: string,
     to?: string,
@@ -63,14 +72,16 @@ export class AttendanceService {
       }
       whereCondition.date = Between(startDate, endDate);
     }
-    return await this.entityManager.find(Attendance, {
+    const attendancelist = await this.entityManager.find(Attendance, {
       where: whereCondition,
       relations: ['course'],
       order: { date: 'DESC' },
     });
+
+    return attendancelist.map((e) => AttendanceDto.createFromEntity(e));
   }
 
-  async findByCourse(
+  public async findAttendanceByCourse(
     course_Id: string,
     date?: string,
   ): Promise<AttendanceDto[]> {
@@ -82,9 +93,11 @@ export class AttendanceService {
       whereCondition.date = new Date(date);
     }
 
-    return await this.entityManager.find(Attendance, {
+    const attendanceList = await this.entityManager.find(Attendance, {
       where: whereCondition,
       relations: ['student'],
     });
+
+    return attendanceList.map((e) => AttendanceDto.createFromEntity(e));
   }
 }

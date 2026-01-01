@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
 export enum AttendanceStatus {
   PRESENT = 'present',
@@ -11,11 +12,11 @@ export enum AttendanceStatus {
 }
 
 export class CreateAttendanceDto {
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   public student_id: string;
 
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   public course_id: string;
 
@@ -23,7 +24,6 @@ export class CreateAttendanceDto {
   @IsNotEmpty()
   public date: Date;
 
-  @IsString()
   @IsNotEmpty()
   @IsEnum(AttendanceStatus)
   public status: AttendanceStatus;

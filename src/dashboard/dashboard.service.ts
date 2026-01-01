@@ -13,7 +13,7 @@ import { Enrollment } from '../enrollment/entities/enrollment.entity';
 
 @Injectable()
 export class DashboardService {
-  constructor(
+  public constructor(
     @InjectRepository(Student)
     private studentRepository: Repository<Student>,
     @InjectRepository(Course)

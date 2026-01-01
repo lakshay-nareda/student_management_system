@@ -10,12 +10,12 @@ import { SignInDto } from './dto/sign-in.dto';
 export class AuthService {
   private readonly _logger = new Logger(AuthService.name);
 
-  constructor(
+  public constructor(
     @InjectEntityManager() private readonly _entityManager: EntityManager,
     private readonly _jwtService: JwtService,
   ) {}
 
-  async signIn(signInDto: SignInDto): Promise<{ access_token: string }> {
+  public async signIn(signInDto: SignInDto): Promise<{ access_token: string }> {
     const { email, password } = signInDto;
 
     this._logger.log(`Login attempt for: ${email}`);
