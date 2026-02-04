@@ -16,7 +16,7 @@ export class MarksService {
 
   public async addMarks(createMarkDto: CreateMarkDto): Promise<MarkDto> {
     return await this.entityManager.transaction(async (markAddManage) => {
-      const { student_id, course_id, exam_type, score, max_score, mark_id } =
+      const { student_id, course_id, exam_type, score, max_score } =
         createMarkDto;
 
       const student = await markAddManage.findOne(Student, {
@@ -39,7 +39,6 @@ export class MarksService {
         exam_type,
         score,
         max_score,
-        mark_id,
       });
 
       const saveMarks = await this.entityManager.save(mark);

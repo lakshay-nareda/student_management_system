@@ -24,7 +24,7 @@ export class EnrollmentDto {
 
   @Expose()
   @IsString()
-  public readonly enrolled_on: string;
+  public readonly enrolled_on: Date;
 
   @Expose()
   @IsEnum(EnrollmentStatus)

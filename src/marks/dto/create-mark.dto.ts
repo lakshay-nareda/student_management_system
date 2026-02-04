@@ -3,9 +3,6 @@ import { ExamType } from '../entities/mark.entity';
 
 export class CreateMarkDto {
   @IsUUID()
-  public mark_id: string;
-
-  @IsUUID()
   @IsNotEmpty()
   public student_id: string;
 

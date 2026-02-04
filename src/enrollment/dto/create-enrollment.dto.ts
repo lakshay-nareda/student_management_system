@@ -1,7 +1,7 @@
 import {
   IsEnum,
   IsUUID,
-  IsDateString,
+  IsString, // ✅ Changed from IsDateString
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
@@ -16,8 +16,9 @@ export class CreateEnrollmentDto {
   @IsNotEmpty()
   public course_id: string;
 
-  @IsDateString()
-  public enrolled_on: string;
+  @IsString() // ✅ Allows "25/02/2024" or "2024-02-25"
+  @IsNotEmpty()
+  public enrolled_on: string; // ✅ Type changed to string
 
   @IsOptional()
   @IsEnum(EnrollmentStatus)

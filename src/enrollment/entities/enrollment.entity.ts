@@ -24,8 +24,8 @@ export class Enrollment {
   @JoinColumn({ name: 'course_id' })
   public course: Course;
 
-  @Column()
-  public enrolled_on: string;
+  @Column({ type: 'date' })
+  public enrolled_on: Date;
 
   @Column({
     type: 'enum',
