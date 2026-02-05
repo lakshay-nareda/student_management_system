@@ -16,11 +16,15 @@ export class Enrollment {
   @PrimaryGeneratedColumn('uuid')
   public readonly enrollment_id: string;
 
-  @ManyToOne(() => Student, (student) => student.enrollment)
+  @ManyToOne(() => Student, (student) => student.enrollment, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'student_id' })
   public student: Student;
 
-  @ManyToOne(() => Course, (course) => course.enrollments)
+  @ManyToOne(() => Course, (course) => course.enrollments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'course_id' })
   public course: Course;
 

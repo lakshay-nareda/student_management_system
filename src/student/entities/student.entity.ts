@@ -44,7 +44,9 @@ export class Student {
   @Column({ type: 'enum', enum: StudentStatus })
   public status: StudentStatus;
 
-  @OneToOne(() => Enrollment, (enrollment) => enrollment.student)
+  @OneToOne(() => Enrollment, (enrollment) => enrollment.student, {
+    onDelete: 'CASCADE',
+  })
   public enrollment: Enrollment;
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
@@ -56,6 +58,8 @@ export class Student {
   @OneToMany(() => Mark, (mark) => mark.student)
   public marks: Mark[];
 
-  @OneToMany(() => Attendance, (attendance) => attendance.student)
+  @OneToMany(() => Attendance, (attendance) => attendance.student, {
+    onDelete: 'CASCADE',
+  })
   public attendances: Attendance[];
 }

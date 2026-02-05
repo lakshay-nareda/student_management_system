@@ -19,11 +19,11 @@ export class Mark {
   @PrimaryGeneratedColumn('uuid')
   public readonly mark_id: string;
 
-  @ManyToOne(() => Student, (student) => student.marks)
+  @ManyToOne(() => Student, (student) => student.marks, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'student_id' })
   public student: Student;
 
-  @ManyToOne(() => Course, (course) => course.marks)
+  @ManyToOne(() => Course, (course) => course.marks, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'course_id' })
   public course: Course;
 

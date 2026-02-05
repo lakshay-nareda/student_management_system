@@ -24,7 +24,9 @@ export class Course {
   @Column()
   public credits: string;
 
-  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.course, {
+    onDelete: 'CASCADE',
+  })
   public enrollments: Enrollment[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
@@ -36,6 +38,8 @@ export class Course {
   @OneToMany(() => Mark, (mark) => mark.course)
   public marks: Mark[];
 
-  @OneToMany(() => Attendance, (attendance) => attendance.course)
+  @OneToMany(() => Attendance, (attendance) => attendance.course, {
+    onDelete: 'CASCADE',
+  })
   public attendances: Attendance[];
 }
